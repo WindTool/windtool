@@ -2,6 +2,15 @@
 
 WindTool 是一个个人开源 Java 工具集
 
+## 代码仓库与文档
+
+- Gitee：<https://gitee.com/AprilWind123/windtool>
+- GitHub：[WindTool/windtool](https://github.com/WindTool/windtool)
+- 使用文档：
+  - [`windtool-tcp`](https://gitee.com/AprilWind123/windtool/tree/v1-master/windtool-tcp)：TCP 报文编解码与短连接通信组件使用文档。
+
+后续新增模块时，每个模块都会提供对应的跳转文档。
+
 ## 模块
 
 - [`windtool-bom`](./windtool-bom/pom.xml)：WindTool 版本管理 BOM，统一管理各模块版本。
