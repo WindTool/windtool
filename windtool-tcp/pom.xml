@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
 
     <name>WindTool TCP</name>
-    <description>WindTool TCP 消息编解码、报文与实体互转、消息收发</description>
+    <description>WindTool TCP 报文编解码与短连接通信组件</description>
 
     <dependencies>
         <dependency>

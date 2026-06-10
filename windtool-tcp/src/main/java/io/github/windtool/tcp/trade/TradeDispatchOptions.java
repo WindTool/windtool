@@ -27,6 +27,7 @@ public record TradeDispatchOptions(
 ) {
 
     public TradeDispatchOptions {
+        // 这里做边界校验，避免服务启动成功后才在第一笔报文上暴露配置错误。
         if (frameMessage == null) {
             throw new IllegalArgumentException("frameMessage 不能为空");
         }
@@ -50,6 +51,7 @@ public record TradeDispatchOptions(
      * @return 默认交易分发配置
      */
     public static TradeDispatchOptions defaults() {
+        // 默认值对应常见监管/银行类短连接报文：4 位长度报头后跟一个分隔符，再进入业务字段。
         return new TradeDispatchOptions(
             new MessageConfig(
                 Object.class,

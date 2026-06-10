@@ -9,6 +9,7 @@ import io.github.windtool.tcp.handler.MessageDecoder;
 import io.github.windtool.tcp.handler.MessageEncoder;
 import io.github.windtool.tcp.handler.NettyServerErrorHandler;
 import io.github.windtool.tcp.handler.NettyServerHandler;
+import io.github.windtool.tcp.trade.TradeDispatchOptions;
 import io.github.windtool.tcp.trade.TradeDispatchServerHandler;
 import io.github.windtool.tcp.trade.TradeHandler;
 import io.github.windtool.tcp.utils.SpringContextHolder;
@@ -56,6 +57,7 @@ public class NettyConfig {
      * @return 报文编码器
      */
     @Bean
+    @ConditionalOnMissingBean
     public MessageEncoder messageEncoder() {
         return new MessageEncoder();
     }
@@ -66,8 +68,22 @@ public class NettyConfig {
      * @return 报文解码器
      */
     @Bean
+    @ConditionalOnMissingBean
     public MessageDecoder messageDecoder() {
         return new MessageDecoder();
+    }
+
+    /**
+     * 创建默认交易分发配置。
+     * <p>
+     * 用户协议和默认规则不一致时，可以声明自己的 {@link TradeDispatchOptions} Bean 覆盖这里。
+     *
+     * @return 默认交易分发配置
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public TradeDispatchOptions tradeDispatchOptions() {
+        return TradeDispatchOptions.defaults();
     }
 
     /**
@@ -111,13 +127,17 @@ public class NettyConfig {
      * {@link TradeDispatchServerHandler}。服务端收到报文后先解析交易码，再选择对应业务处理器。
      *
      * @param tradeHandlers 所有交易业务处理器
+     * @param options       交易分发配置
      * @return 交易码分发处理器
      */
     @Bean
     @ConditionalOnBean(TradeHandler.class)
     @ConditionalOnMissingBean(TradeDispatchServerHandler.class)
-    public TradeDispatchServerHandler tradeDispatchServerHandler(ObjectProvider<TradeHandler<?, ?>> tradeHandlers) {
-        return new TradeDispatchServerHandler(tradeHandlers.orderedStream().toList());
+    public TradeDispatchServerHandler tradeDispatchServerHandler(
+        ObjectProvider<TradeHandler<?, ?>> tradeHandlers,
+        TradeDispatchOptions options
+    ) {
+        return new TradeDispatchServerHandler(tradeHandlers.orderedStream().toList(), options);
     }
 
     /**
