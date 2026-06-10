@@ -363,29 +363,6 @@ public class TcpTradeConfig {
 
 如果用户自己声明同类型 Bean，自动装配会优先使用用户 Bean。
 
-## 从旧 common-netty 迁移
-
-从业务项目迁移时，主要是包名和接口名变化：
-
-| 旧写法 | 新写法 |
-| --- | --- |
-| `org.dromara.common.netty.annotation.*` | `io.github.windtool.tcp.annotation.*` |
-| `org.dromara.common.netty.core.NettyClient` | `io.github.windtool.tcp.core.NettyClient` |
-| `org.dromara.common.netty.handler.NettyServerHandler` | `io.github.windtool.tcp.handler.NettyServerHandler` |
-| `SzwyTradeHandler<T, R>` | `TradeHandler<T, R>` |
-| `SzwyTradeDispatchServerHandler` | `TradeDispatchServerHandler` |
-| `org.dromara.common.netty.szwy.*` 下的 BO/VO/错误码 | 放到用户自己的业务模块中维护 |
-
-迁移步骤：
-
-1. 把业务 BO/VO 的注解包名替换为 `io.github.windtool.tcp.annotation.*`。
-2. 把每个 `SzwyTradeHandler` 实现改成 `TradeHandler` 实现。
-3. 保留原来的 `tradeCode()`、`requestClass()`、`responseClass()`、`handle()` 结构。
-4. 如果协议帧不是默认 4 位总长报头，声明 `TradeDispatchOptions` Bean。
-5. 删除对旧 `szwy` 公共包 BO/VO 的依赖，把这些类放到自己的业务模块。
-
-迁移后的业务模块只依赖 `windtool-tcp`，不需要再依赖旧 common-netty。
-
 ## 测试建议
 
 建议在业务项目中至少覆盖：
